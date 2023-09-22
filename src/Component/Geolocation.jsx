@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import axios from "axios";
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 function LocationGeolocation({ setUserCountryData }) {
   let userCountryCode = "";
   useEffect(() => {
@@ -9,7 +10,7 @@ function LocationGeolocation({ setUserCountryData }) {
           const { latitude, longitude } = position.coords;
           try {
             const response = await axios.get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAuLUgCrkoCCLmC-JkYNF9YdE_iYg745do`
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${apiKey}`
             );
             if (response.data.status === "OK") {
               const countryData = response.data.results.find((result) =>

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
 function AirportList({ countryCode }) {
   const [airports, setAirports] = useState([]);
   //gets airports if country code is correct and is not empty string
   if (countryCode != "") {
     useEffect(() => {
       const AIRPORTS_URL = `https://api.api-ninjas.com/v1/airports?country=${countryCode}`;
-      const API_KEY = "f9sgzo0a+YJ17NbUkdo/9g==Uf9CkVrxHy39Fdvn";
+      const API_KEY = apiKey;
       const fetchData = async () => {
         try {
           const response = await axios.get(AIRPORTS_URL, {
