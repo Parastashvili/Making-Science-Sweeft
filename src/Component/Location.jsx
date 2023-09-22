@@ -1,65 +1,34 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
+import Geolocation from "./Geolocation";
+import CountryList from "./CountryList";
+import AirportList from "./AirportList";
 
 function Location() {
-  const [userCountry, setUserCountry] = useState("");
+  const [userCountry, setUserCountry] = useState("Selecting your country...");
+  const [userCountryCode, setUserCountryCode] = useState("GE");
   const [countries, setCountries] = useState([]);
 
-  useEffect(() => {
-    const getLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(async (position) => {
-          const { latitude, longitude } = position.coords;
-          try {
-            const response = await axios.get(
-              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAuLUgCrkoCCLmC-JkYNF9YdE_iYg745do`
-            );
-            const countryData = response.data.results.find((result) =>
-              result.types.includes("country")
-            );
-            if (countryData) {
-              setUserCountry(countryData.formatted_address);
-            } else {
-              setUserCountry("We are unable to find your country");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            setUserCountry("");
-          }
-        });
-      } else {
-        console.error("Error");
-        setUserCountry("");
-      }
-    };
-
-    // get list of countries
-    fetch("https://restcountries.com/v3.1/all")
-      .then((response) => response.json())
-      .then((data) => {
-        const countryNames = data.map((country) => country.name.common);
-        setCountries(countryNames);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-
-    getLocation();
-  }, []);
-
-  // dropdown countries menu handler
+  // choose country
   const handleCountryChange = (event) => {
-    setUserCountry(event.target.value);
+    const selectedCountryName = event.target.value;
+    const selectedCountry = countries.find(
+      (country) => country.name === selectedCountryName
+    );
+    if (selectedCountry) {
+      setUserCountry(selectedCountry.name);
+      setUserCountryCode(selectedCountry.code);
+    } else {
+      setUserCountry(selectedCountryName);
+      setUserCountryCode(null);
+    }
   };
 
   return (
     <div>
-      {userCountry && (
-        <div>
-          <h2>Your Country</h2>
-          <p>{userCountry}</p>
-        </div>
-      )}
+      <div>
+        <h2>Your Country</h2>
+        <p>{userCountry}</p>
+      </div>
       <label htmlFor="countrySelect">Select your country:</label>
       <select
         id="countrySelect"
@@ -67,11 +36,20 @@ function Location() {
         onChange={handleCountryChange}
       >
         {countries.map((country, index) => (
-          <option key={index} value={country}>
-            {country}
+          <option key={index} value={country.name}>
+            {country.name}
           </option>
         ))}
       </select>
+      <Geolocation
+        setUserCountry={setUserCountry}
+        setUserCountryCode={setUserCountryCode}
+      />
+      <CountryList
+        setCountries={setCountries}
+        setUserCountry={setUserCountry}
+      />
+      <AirportList countryCode={userCountryCode} />
     </div>
   );
 }
