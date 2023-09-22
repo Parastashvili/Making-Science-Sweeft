@@ -1,5 +1,4 @@
 import React from "react";
-
 function CountryInfo({ userCountryData, countries }) {
   let matchingCountryNames = "";
   try {
@@ -11,7 +10,6 @@ function CountryInfo({ userCountryData, countries }) {
   } catch (error) {
     console.error("Error:", error);
   }
-
   const formattedNumber = userCountryData.population.toLocaleString();
   return (
     <div>

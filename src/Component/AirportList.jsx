@@ -3,7 +3,6 @@ import axios from "axios";
 
 function AirportList({ countryCode }) {
   const [airports, setAirports] = useState([]);
-
   //gets airports if country code is correct and is not empty string
   if (countryCode != "") {
     useEffect(() => {
@@ -24,7 +23,6 @@ function AirportList({ countryCode }) {
       fetchData();
     }, [countryCode]);
   }
-
   return (
     <div>
       {airports.length > 0 ? (
@@ -44,5 +42,4 @@ function AirportList({ countryCode }) {
     </div>
   );
 }
-
 export default AirportList;

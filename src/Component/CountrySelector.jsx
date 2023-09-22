@@ -1,5 +1,4 @@
 import React from "react";
-
 function CountrySelector({ userCountryData, countries, onCountryChange }) {
   const handleSelectChange = (event) => {
     const selectedCountryName = event.target.value;
