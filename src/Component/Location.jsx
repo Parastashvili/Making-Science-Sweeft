@@ -1,57 +1,117 @@
-import React, { useState } from "react";
-import Geolocation from "./Geolocation";
-import CountryList from "./CountryList";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import CountrySelector from "./CountrySelector";
+import CountryInfo from "./CountryInfo";
 import AirportList from "./AirportList";
-
 function Location() {
-  const [userCountry, setUserCountry] = useState("Selecting your country...");
-  const [userCountryCode, setUserCountryCode] = useState("GE");
+  const [userCountryData, setUserCountryData] = useState({
+    name: "",
+    code: null,
+    capital: "",
+    currency: {
+      name: "",
+      symbol: "",
+    },
+    region: "",
+    continent: "",
+    population: "",
+    borders: "",
+    flag: "",
+  });
   const [countries, setCountries] = useState([]);
-
-  // choose country
-  const handleCountryChange = (event) => {
-    const selectedCountryName = event.target.value;
-    const selectedCountry = countries.find(
-      (country) => country.name === selectedCountryName
-    );
-    if (selectedCountry) {
-      setUserCountry(selectedCountry.name);
-      setUserCountryCode(selectedCountry.code);
+  useEffect(() => {
+    fetchData();
+  }, []);
+  const fetchData = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+          try {
+            const response = await axios.get(
+              `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=AIzaSyAuLUgCrkoCCLmC-JkYNF9YdE_iYg745do`
+            );
+            if (response.data.status === "OK") {
+              const countryData = response.data.results.find((result) =>
+                result.types.includes("country")
+              );
+              if (countryData) {
+                const countryName = countryData.address_components.find(
+                  (component) => component.types.includes("country")
+                ).long_name;
+                setUserCountryData({ ...userCountryData, name: countryName });
+              } else {
+                console.error("Country data not found in geocoding response");
+              }
+            } else {
+              console.error(
+                "Geocoding API request failed with status:",
+                response.data.status
+              );
+            }
+          } catch (error) {
+            console.error("Error fetching geolocation data:", error);
+          }
+        },
+        (error) => {
+          console.error("Geolocation error:", error);
+        }
+      );
     } else {
-      setUserCountry(selectedCountryName);
-      setUserCountryCode(null);
+      console.error("Geolocation not available");
+    }
+    axios
+      .get("https://restcountries.com/v3.1/all")
+      .then((response) => {
+        const countryList = response.data.map((country) => ({
+          name: country.name.common,
+          nameOff: country.name.official,
+          code: country.cca2,
+          capital: country.capital,
+          currency: country.currencies,
+          region: country.region,
+          continent: country.continents,
+          population: country.population,
+          borders: country.borders,
+          flag: country.flags.png,
+        }));
+        setCountries(countryList);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  const handleCountryChange = (selectedCountry) => {
+    if (selectedCountry) {
+      setUserCountryData({
+        ...selectedCountry,
+        currency: {
+          name: selectedCountry.currency[
+            Object.keys(selectedCountry.currency)[0]
+          ].name,
+          symbol:
+            selectedCountry.currency[Object.keys(selectedCountry.currency)[0]]
+              .symbol,
+        },
+      });
+    } else {
+      setUserCountryData({
+        ...userCountryData,
+        name: "",
+        code: null,
+      });
     }
   };
-
   return (
     <div>
-      <div>
-        <h2>Your Country</h2>
-        <p>{userCountry}</p>
-      </div>
-      <label htmlFor="countrySelect">Select your country:</label>
-      <select
-        id="countrySelect"
-        value={userCountry}
-        onChange={handleCountryChange}
-      >
-        {countries.map((country, index) => (
-          <option key={index} value={country.name}>
-            {country.name}
-          </option>
-        ))}
-      </select>
-      <Geolocation
-        setUserCountry={setUserCountry}
-        setUserCountryCode={setUserCountryCode}
+      <CountrySelector
+        userCountryData={userCountryData}
+        countries={countries}
+        onCountryChange={handleCountryChange}
       />
-      <CountryList
-        setCountries={setCountries}
-        setUserCountry={setUserCountry}
-      />
-      <AirportList countryCode={userCountryCode} />
+      <CountryInfo userCountryData={userCountryData} />
+      <AirportList countryCode={userCountryData.code} />
     </div>
   );
 }
-
 export default Location;

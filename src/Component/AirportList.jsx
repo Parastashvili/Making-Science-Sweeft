@@ -29,7 +29,7 @@ function AirportList({ countryCode }) {
     <div>
       {airports.length > 0 ? (
         <div>
-          <h2>Airports in {countryCode}</h2>
+          <h2>Airports</h2>
           <ul>
             {airports.map((airport, index) => (
               <li key={index}>
