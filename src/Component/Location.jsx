@@ -61,15 +61,20 @@ function Location() {
       console.error("Geolocation not available");
     }
     axios
-      .get("https://restcountries.com/v3.1/all")
+      .get(
+        "https://restcountries.com/v3.1/all"
+      )
+      // ?fields=name,cca2,capital,currencies,region,subregion,continents,population,borders,flags
       .then((response) => {
         const countryList = response.data.map((country) => ({
           name: country.name.common,
           nameOff: country.name.official,
           code: country.cca2,
+          code3: country.cca3,
           capital: country.capital,
           currency: country.currencies,
           region: country.region,
+          subregion: country.subregion,
           continent: country.continents,
           population: country.population,
           borders: country.borders,
@@ -109,7 +114,7 @@ function Location() {
         countries={countries}
         onCountryChange={handleCountryChange}
       />
-      <CountryInfo userCountryData={userCountryData} />
+      <CountryInfo userCountryData={userCountryData} countries={countries} />
       <AirportList countryCode={userCountryData.code} />
     </div>
   );
