@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 import { useNavigate } from "react-router-dom";
-const UserDirectComponent = () => {
+const UserDirectComponent = ({ setCountry }) => {
   const navigate = useNavigate();
   const [userCode, setUserCode] = useState("");
   useEffect(() => {
@@ -61,7 +61,7 @@ const UserDirectComponent = () => {
             (country) => country.code === userCode
           );
           if (selectedCountryData) {
-            console.log(selectedCountryData.code3);
+            setCountry(selectedCountryData.name);
             navigate(`/${selectedCountryData.code3}`);
           } else {
             console.log("Country not found");

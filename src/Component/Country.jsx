@@ -3,21 +3,19 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
-function CountryWithAirports() {
+function Country({ country, setCountry }) {
   const { code3 } = useParams();
   const [countryData, setCountryData] = useState(null);
   const [allCountry, setAllCountry] = useState([]);
   const [airports, setAirports] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const [selectedCountry, setSelectedCountry] = useState("");
   useEffect(() => {
     axios
       .get(
         "https://restcountries.com/v3.1/all?fields=name,cca2,cca3,capital,currencies,region,subregion,continents,population,borders,flags"
       )
       .then((response) => {
-        console.log("got");
         const countryList = response.data.map((country) => {
           const currencyCode = Object.keys(country.currencies)[0];
           const currencyInfo = country.currencies[currencyCode];
@@ -43,6 +41,7 @@ function CountryWithAirports() {
           };
         });
         setAllCountry(countryList);
+        setCountry(countryList.find((c) => c.code3 === code3).name);
         setCountryData(countryList.find((c) => c.code3 === code3));
         setLoading(false);
       })
@@ -75,7 +74,7 @@ function CountryWithAirports() {
     );
     console.log(selectedCountryData);
     if (selectedCountryData) {
-      setSelectedCountry(selectedCountryData.name);
+      setCountry(selectedCountryData.name);
       navigate(`/${selectedCountryData.code3}`);
     } else {
       console.log("Country not found");
@@ -100,8 +99,7 @@ function CountryWithAirports() {
         <label>Select your country:</label>
         <select
           id="countrySelect"
-          default={"Georgia"}
-          value={selectedCountry}
+          value={country}
           onChange={handleCountryChange}
         >
           <option value="">Select a country</option>
@@ -146,4 +144,4 @@ function CountryWithAirports() {
     </div>
   );
 }
-export default CountryWithAirports;
+export default Country;
