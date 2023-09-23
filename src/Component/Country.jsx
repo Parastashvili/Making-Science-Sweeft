@@ -195,8 +195,8 @@ function Country({ country, setCountry }) {
             </>
           ) : (
             <div>
-              <h2>Currency Exchange</h2>
-              <p>currency not availabe yet</p>
+              <h2 className="sectionHeader">Currency Exchange</h2>
+              <p>currency not availabe working on it :D </p>
             </div>
           )}
         </ul>
