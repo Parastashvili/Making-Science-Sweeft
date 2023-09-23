@@ -138,9 +138,8 @@ function Country({ country, setCountry }) {
       </p>
       <p>Borders: {borderCountries}</p>
       <div>
-        <h2>Airports</h2>
         <ul>
-          <Box sx={{ width: 500 }}>
+          <Box sx={{ width: 250 }}>
             <BottomNavigation
               showLabels
               value={value}
@@ -159,19 +158,23 @@ function Country({ country, setCountry }) {
             </BottomNavigation>
           </Box>
           {value === 1 ? (
-            <ul>
+            <div>
+              <h2>Airports</h2>
               {airports.length > 0 ? (
                 airports.map((airport, index) => (
-                  <li key={index}>
+                  <p key={index}>
                     {airport.iata} - {airport.name} ({airport.city})
-                  </li>
+                  </p>
                 ))
               ) : (
                 <p>There are no airports in this country</p>
               )}
-            </ul>
+            </div>
           ) : (
-            <p>currency not availabe yet</p>
+            <div>
+              <h2>Currency Exchange</h2>
+              <p>currency not availabe yet</p>
+            </div>
           )}
         </ul>
       </div>
