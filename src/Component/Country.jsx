@@ -10,6 +10,7 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import styled from "styled-components";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
 function Country({ country, setCountry }) {
   const { code3 } = useParams();
@@ -102,7 +103,7 @@ function Country({ country, setCountry }) {
     .filter((e) => e !== "")
     .join(", ");
   return (
-    <div>
+    <Outer>
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
           <Select
@@ -119,24 +120,44 @@ function Country({ country, setCountry }) {
           </Select>
         </FormControl>
       </Box>
-
-      <div>
-        <h1>{countryData.nameOff}</h1>
-        <img src={countryData.flag} alt="country flag" />
-      </div>
-      <p>Capital: {countryData.capital}</p>
-      <p>Continent: {continent}</p>
-      <p>
-        Currency:{" "}
-        {countryData.currency
-          ? `${countryData.currency.name} (${countryData.currency.symbol})`
-          : "N/A"}
-      </p>
-      <p>Population: {formattedNumber}</p>
-      <p>
-        Region: {countryData.region}, {countryData.subregion}
-      </p>
-      <p>Borders: {borderCountries}</p>
+      <InfoWrapper>
+        <div className="nameandflag">
+          <h1 className="countryName">{countryData.nameOff}</h1>
+          <img className="flag" src={countryData.flag} alt="country flag" />
+        </div>
+        <div className="grid">
+          <p className="info">
+            <Name>Capital:</Name>
+            <Dsc>{countryData.capital}</Dsc>
+          </p>
+          <p className="info">
+            <Name>Continent:</Name>
+            <Dsc>{continent}</Dsc>
+          </p>
+          <p className="info">
+            <Name>Currency:</Name>
+            <Dsc>
+              {countryData.currency
+                ? `${countryData.currency.name} (${countryData.currency.symbol})`
+                : "N/A"}
+            </Dsc>
+          </p>
+          <p className="info">
+            <Name>Population:</Name>
+            <Dsc>{formattedNumber}</Dsc>
+          </p>
+          <p className="info">
+            <Name>Region:</Name>
+            <Dsc>
+              {countryData.region}, {countryData.subregion}
+            </Dsc>
+          </p>
+          <p className="info">
+            <Name>Borders:</Name>
+            <Dsc>{borderCountries}</Dsc>
+          </p>
+        </div>
+      </InfoWrapper>
       <div>
         <ul>
           <Box sx={{ width: 250 }}>
@@ -178,7 +199,55 @@ function Country({ country, setCountry }) {
           )}
         </ul>
       </div>
-    </div>
+    </Outer>
   );
 }
 export default Country;
+const Outer = styled.div`
+  max-width: 1000px;
+  margin: auto;
+  border: 1px solid #0000001e;
+  border-radius: 5px;
+  line-height: 1;
+  padding: 30px;
+`;
+const InfoWrapper = styled.div`
+  padding: 20px;
+  border-radius: 5px;
+  margin: 30px 0;
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.12),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.2);
+  .nameandflag {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    .countryName {
+      font-family: "Roboto", sans-serif;
+    }
+    .flag {
+      width: 45px;
+      height: 30px;
+    }
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+  }
+
+  .info {
+    display: flex;
+  }
+`;
+
+const Name = styled.p`
+  font-family: "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+  min-width: 120px;
+`;
+const Dsc = styled.p`
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  margin-left: 10px;
+`;
