@@ -179,18 +179,20 @@ function Country({ country, setCountry }) {
             </BottomNavigation>
           </Box>
           {value === 1 ? (
-            <div>
-              <h2>Airports</h2>
-              {airports.length > 0 ? (
-                airports.map((airport, index) => (
-                  <p key={index}>
-                    {airport.iata} - {airport.name} ({airport.city})
-                  </p>
-                ))
-              ) : (
-                <p>There are no airports in this country</p>
-              )}
-            </div>
+            <>
+              <h2 className="sectionHeader">Airports</h2>
+              <div className="grid">
+                {airports.length > 0 ? (
+                  airports.map((airport, index) => (
+                    <Dsc key={index}>
+                      {airport.iata} - {airport.name} ({airport.city})
+                    </Dsc>
+                  ))
+                ) : (
+                  <p>There are no airports in this country</p>
+                )}
+              </div>
+            </>
           ) : (
             <div>
               <h2>Currency Exchange</h2>
@@ -204,12 +206,30 @@ function Country({ country, setCountry }) {
 }
 export default Country;
 const Outer = styled.div`
-  max-width: 1000px;
+  max-width: 1200px;
   margin: auto;
   border: 1px solid #0000001e;
   border-radius: 5px;
   line-height: 1;
   padding: 30px;
+  p {
+    margin: 0px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+    row-gap: 20px;
+  }
+  @media (max-width: 900px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  .sectionHeader {
+    font-family: "Roboto", sans-serif;
+    font-size: 34px;
+    font-weight: 500;
+  }
 `;
 const InfoWrapper = styled.div`
   padding: 20px;
@@ -229,10 +249,6 @@ const InfoWrapper = styled.div`
       height: 30px;
     }
   }
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
-  }
 
   .info {
     display: flex;
@@ -244,10 +260,12 @@ const Name = styled.p`
   font-weight: 700;
   font-size: 16px;
   min-width: 120px;
+  line-height: 20px;
 `;
 const Dsc = styled.p`
   font-family: "Roboto", sans-serif;
   font-weight: 400;
   font-size: 16px;
   margin-left: 10px;
+  line-height: 20px;
 `;
