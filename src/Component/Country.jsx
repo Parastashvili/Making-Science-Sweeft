@@ -10,16 +10,21 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
+import Skeleton from "@mui/material/Skeleton";
 import styled from "styled-components";
+import TextField from "@mui/material/TextField";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
 function Country({ country, setCountry }) {
   const { code3 } = useParams();
   const [countryData, setCountryData] = useState(null);
   const [allCountry, setAllCountry] = useState([]);
   const [airports, setAirports] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [found, setFound] = useState(true);
   const navigate = useNavigate();
   const [value, setValue] = useState(0);
+  const [filter, setFilter] = useState("");
+  const [filteredAirports, setFilteredAirports] = useState(airports);
   useEffect(() => {
     axios
       .get(
@@ -53,12 +58,22 @@ function Country({ country, setCountry }) {
         setAllCountry(countryList);
         setCountry(countryList.find((c) => c.code3 === code3).name);
         setCountryData(countryList.find((c) => c.code3 === code3));
-        setLoading(false);
+        setFound(false);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
   }, [code3]);
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      const filtered = airports.filter((airport) =>
+        airport.name.toLowerCase().includes(filter.toLowerCase())
+      );
+      setFilteredAirports(filtered);
+    }, 500);
+
+    return () => clearTimeout(debounce);
+  }, [filter, airports]);
   useEffect(() => {
     if (countryData) {
       const AIRPORTS_URL = `https://api.api-ninjas.com/v1/airports?country=${countryData.code}`;
@@ -70,6 +85,7 @@ function Country({ country, setCountry }) {
             },
           });
           setAirports(response.data.filter((entry) => entry.iata !== ""));
+          setIsLoading(false);
         } catch (error) {
           console.error("Error:", error);
         }
@@ -78,6 +94,7 @@ function Country({ country, setCountry }) {
     }
   }, [countryData, apiKey]);
   const handleCountryChange = (e) => {
+    setIsLoading(true);
     const selectedCountryName = e.target.value;
     const selectedCountryData = allCountry.find(
       (country) => country.name === selectedCountryName
@@ -89,8 +106,20 @@ function Country({ country, setCountry }) {
       console.log("Country not found");
     }
   };
-  if (loading) {
-    return <div>Loading...</div>;
+  if (found) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "red",
+          height: "100vh",
+        }}
+      >
+        Country not found try again
+      </div>
+    );
   }
   const borderCountries = allCountry
     .filter((country) => countryData.borders.includes(country.code3))
@@ -186,22 +215,59 @@ function Country({ country, setCountry }) {
           {value === 1 ? (
             <>
               <h2 className="sectionHeader">Airports</h2>
-              <div className="grid">
-                {airports.length > 0 ? (
-                  airports.map((airport, index) => (
-                    <Dsc key={index}>
-                      {airport.iata} - {airport.name} ({airport.city})
-                    </Dsc>
-                  ))
-                ) : (
-                  <p>There are no airports in this country</p>
-                )}
-              </div>
+              {isLoading ? (
+                <div className="grid">
+                  <Box sx={{ width: 340 }}>
+                    <Skeleton height={30} animation="wave" />
+                  </Box>
+                  <Box sx={{ width: 340 }}>
+                    <Skeleton height={30} animation="wave" />
+                  </Box>
+                  <Box sx={{ width: 340 }}>
+                    <Skeleton height={30} animation="wave" />
+                  </Box>
+                  <Box sx={{ width: 340 }}>
+                    <Skeleton height={30} animation="wave" />
+                  </Box>
+                </div>
+              ) : (
+                <>
+                  <Box
+                    component="form"
+                    sx={{
+                      "& .MuiTextField-root": { m:"0 0 20px 0", width: "200px" },
+                    }}
+                    noValidate
+                    autoComplete="off"
+                  >
+                    <div>
+                      <TextField
+                        id="standard-multiline-flexible"
+                        label="Search for airport"
+                        variant="standard"
+                        value={filter}
+                        onChange={(e) => setFilter(e.target.value)}
+                      />
+                    </div>
+                  </Box>
+                  <div className="grid">
+                    {filteredAirports.length > 0 ? (
+                      filteredAirports.map((airport, index) => (
+                        <div key={index}>
+                          {airport.iata} - {airport.name} ({airport.city})
+                        </div>
+                      ))
+                    ) : (
+                      <p>There are no airports matching the filter</p>
+                    )}
+                  </div>
+                </>
+              )}
             </>
           ) : (
             <div>
               <h2 className="sectionHeader">Currency Exchange</h2>
-              <p>currency not availabe working on it :D </p>
+              <p>currency not available, working on it :D</p>
             </div>
           )}
         </ul>
