@@ -4,6 +4,10 @@ import Country from "./Component/Country";
 import DirectUser from "./Component/DirectUser";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 const queryClient = new QueryClient();
 const App = () => {
@@ -13,7 +17,10 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<DirectUser setCountry={setCountry} />} />
-          <Route path="/:code3" element={<Country country={country} setCountry={setCountry} />} />
+          <Route
+            path="/:code3"
+            element={<Country country={country} setCountry={setCountry} />}
+          />
         </Routes>
       </Router>
       <ReactQueryDevtools />

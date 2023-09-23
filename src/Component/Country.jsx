@@ -2,6 +2,14 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import Box from "@mui/material/Box";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
 function Country({ country, setCountry }) {
   const { code3 } = useParams();
@@ -10,6 +18,7 @@ function Country({ country, setCountry }) {
   const [airports, setAirports] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [value, setValue] = useState(0);
   useEffect(() => {
     axios
       .get(
@@ -72,7 +81,6 @@ function Country({ country, setCountry }) {
     const selectedCountryData = allCountry.find(
       (country) => country.name === selectedCountryName
     );
-    console.log(selectedCountryData);
     if (selectedCountryData) {
       setCountry(selectedCountryData.name);
       navigate(`/${selectedCountryData.code3}`);
@@ -95,21 +103,23 @@ function Country({ country, setCountry }) {
     .join(", ");
   return (
     <div>
-      <div>
-        <label>Select your country:</label>
-        <select
-          id="countrySelect"
-          value={country}
-          onChange={handleCountryChange}
-        >
-          <option value="">Select a country</option>
-          {allCountry.map((country, index) => (
-            <option key={index} value={country.name}>
-              {country.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <Box sx={{ minWidth: 120 }}>
+        <FormControl fullWidth>
+          <Select
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            value={country}
+            onChange={handleCountryChange}
+          >
+            {allCountry.map((country, index) => (
+              <MenuItem key={index} value={country.name}>
+                {country.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
+
       <div>
         <h1>{countryData.nameOff}</h1>
         <img src={countryData.flag} alt="country flag" />
@@ -127,20 +137,44 @@ function Country({ country, setCountry }) {
         Region: {countryData.region}, {countryData.subregion}
       </p>
       <p>Borders: {borderCountries}</p>
-      {airports.length > 0 ? (
-        <div>
-          <h2>Airports</h2>
-          <ul>
-            {airports.map((airport, index) => (
-              <li key={index}>
-                {airport.iata} - {airport.name} ({airport.city})
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : (
-        <p>There are no airports in this country</p>
-      )}
+      <div>
+        <h2>Airports</h2>
+        <ul>
+          <Box sx={{ width: 500 }}>
+            <BottomNavigation
+              showLabels
+              value={value}
+              onChange={(event, newValue) => {
+                setValue(newValue);
+              }}
+            >
+              <BottomNavigationAction
+                label="Currency"
+                icon={<CurrencyExchangeIcon />}
+              />
+              <BottomNavigationAction
+                label="Airports"
+                icon={<AirplanemodeActiveIcon />}
+              />
+            </BottomNavigation>
+          </Box>
+          {value === 1 ? (
+            <ul>
+              {airports.length > 0 ? (
+                airports.map((airport, index) => (
+                  <li key={index}>
+                    {airport.iata} - {airport.name} ({airport.city})
+                  </li>
+                ))
+              ) : (
+                <p>There are no airports in this country</p>
+              )}
+            </ul>
+          ) : (
+            <p>currency not availabe yet</p>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
