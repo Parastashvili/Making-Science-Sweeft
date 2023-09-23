@@ -111,6 +111,11 @@ function Country({ country, setCountry }) {
             id="demo-simple-select"
             value={country}
             onChange={handleCountryChange}
+            MenuProps={{
+              PaperProps: {
+                style: { maxHeight: "300px" },
+              },
+            }}
           >
             {allCountry.map((country, index) => (
               <MenuItem key={index} value={country.name}>
@@ -160,7 +165,7 @@ function Country({ country, setCountry }) {
       </InfoWrapper>
       <div>
         <ul>
-          <Box sx={{ width: 250 }}>
+          <Box sx={{ width: 400 }} style={{ scale: "1.3" }}>
             <BottomNavigation
               showLabels
               value={value}
@@ -229,6 +234,13 @@ const Outer = styled.div`
     font-family: "Roboto", sans-serif;
     font-size: 34px;
     font-weight: 500;
+  }
+  ul {
+    padding: 20px;
+    border-radius: 5px;
+    margin: 30px 0;
+    box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.12),
+      0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.2);
   }
 `;
 const InfoWrapper = styled.div`
