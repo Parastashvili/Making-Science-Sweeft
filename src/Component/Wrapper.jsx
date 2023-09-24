@@ -31,7 +31,7 @@ export default function Wrapper({ country, setCountry }) {
             ? {
                 name: currencyInfo.name,
                 symbol: currencyInfo.symbol,
-                code:currencyCode,
+                code: currencyCode,
               }
             : null;
           return {
@@ -145,6 +145,7 @@ const Outer = styled.div`
     font-family: "Roboto", sans-serif;
     font-size: 34px;
     font-weight: 500;
+    margin-top: 20px;
   }
   ul {
     padding: 20px;
