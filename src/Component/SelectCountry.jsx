@@ -4,7 +4,8 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import Box from "@mui/material/Box";
-export default function Search({
+
+export default function SelectCountry({
   allCountry,
   country,
   setIsLoading,
@@ -12,6 +13,7 @@ export default function Search({
   setValue,
 }) {
   const navigate = useNavigate();
+
   const handleCountryChange = (e) => {
     const selectedCountryName = e.target.value;
     const selectedCountryData = allCountry.find(
@@ -26,6 +28,7 @@ export default function Search({
       console.log("Country not found");
     }
   };
+
   return (
     <div>
       <Box sx={{ minWidth: 120 }}>

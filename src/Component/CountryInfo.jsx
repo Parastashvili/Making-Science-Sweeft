@@ -1,16 +1,20 @@
 import React from "react";
 import styled from "styled-components";
+
 export default function CountryInfo({ countryData, allCountry }) {
   const borderCountries = allCountry
     .filter((country) => countryData.borders.includes(country.code3))
     .map((country) => country.name)
     .sort()
     .join(", ");
+
   const formattedNumber = countryData.population.toLocaleString();
+
   const continent = countryData.continent
     .map((e) => e.trim())
     .filter((e) => e !== "")
     .join(", ");
+    
   return (
     <InfoWrapper>
       <div className="nameandflag">
@@ -31,7 +35,7 @@ export default function CountryInfo({ countryData, allCountry }) {
           <Dsc>
             {countryData.currency
               ? `${countryData.currency.name} (${countryData.currency.symbol})`
-              : "N/A"}
+              : null}
           </Dsc>
         </span>
         <span className="info">

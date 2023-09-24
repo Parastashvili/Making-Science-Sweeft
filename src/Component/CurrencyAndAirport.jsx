@@ -5,11 +5,15 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 import Airports from "./Airports";
+import CurrencyWrapper from "./Currency/CurrencyWrapper";
+
 export default function CurrencyAndAirport({
   value,
   setValue,
   airports,
   isLoading,
+  allCountry,
+  countryData,
 }) {
   const handleNavigationChange = (event, newValue) => {
     const currentPath = window.location.pathname;
@@ -22,6 +26,7 @@ export default function CurrencyAndAirport({
     }
     setValue(newValue);
   };
+  
   return (
     <div>
       {" "}
@@ -42,14 +47,11 @@ export default function CurrencyAndAirport({
         </BottomNavigation>
       </Box>
       <div>
-        {value === 0 && <AirportsComponent />}
+        {value === 0 && (
+          <CurrencyWrapper allCountry={allCountry} countryData={countryData} />
+        )}
         {value === 1 && <Airports airports={airports} isLoading={isLoading} />}
       </div>
     </div>
   );
-}
-
-function AirportsComponent() {
-  // Render your Airports component content here
-  return <div>Airports Component Content</div>;
 }

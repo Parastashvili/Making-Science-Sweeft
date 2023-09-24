@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import CountryInfo from "./CountryInfo";
-import Airports from "./Airports";
 import Search from "./Search";
 import CurrencyAndAirport from "./CurrencyAndAirport";
 import axios from "axios";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
+
 export default function Wrapper({ country, setCountry }) {
   const { code3 } = useParams();
   const [countryData, setCountryData] = useState(null);
@@ -17,6 +17,7 @@ export default function Wrapper({ country, setCountry }) {
   const location = useLocation();
   const isAirportsRoute = location.pathname.endsWith("/airports");
   const [value, setValue] = useState(isAirportsRoute ? 1 : 0);
+
   useEffect(() => {
     axios
       .get(
@@ -30,6 +31,7 @@ export default function Wrapper({ country, setCountry }) {
             ? {
                 name: currencyInfo.name,
                 symbol: currencyInfo.symbol,
+                code:currencyCode,
               }
             : null;
           return {
@@ -92,6 +94,7 @@ export default function Wrapper({ country, setCountry }) {
       </div>
     );
   }
+
   return (
     <Outer>
       <Search
@@ -104,17 +107,20 @@ export default function Wrapper({ country, setCountry }) {
       <CountryInfo countryData={countryData} allCountry={allCountry} />
       <div>
         <ul>
-          <CurrencyAndAirport value={value} setValue={setValue} airports={airports} isLoading={isLoading} />
-          {/* {isAirportsRoute ? (
-            <Airports airports={airports} isLoading={isLoading} />
-          ) : (
-            <div>hello worldddd</div>
-          )} */}
+          <CurrencyAndAirport
+            value={value}
+            setValue={setValue}
+            airports={airports}
+            isLoading={isLoading}
+            allCountry={allCountry}
+            countryData={countryData}
+          />
         </ul>
       </div>
     </Outer>
   );
 }
+
 const Outer = styled.div`
   max-width: 1200px;
   margin: auto;
@@ -147,7 +153,7 @@ const Outer = styled.div`
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.12),
       0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.2);
   }
-  h2{
+  h2 {
     margin: 0;
   }
 `;

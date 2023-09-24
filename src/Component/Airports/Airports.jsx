@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+
 export default function Airports({ airports, isLoading }) {
   const [filter, setFilter] = useState("");
   const [filteredAirports, setFilteredAirports] = useState(airports);
+
   useEffect(() => {
     const debounce = setTimeout(() => {
       const filtered = airports.filter((airport) =>
@@ -14,6 +16,7 @@ export default function Airports({ airports, isLoading }) {
     }, 500);
     return () => clearTimeout(debounce);
   }, [filter, airports]);
+  
   return (
     <div>
       <>
