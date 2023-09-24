@@ -1,11 +1,11 @@
-import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import CountryInfo from "./CountryInfo";
 import Airports from "./Airports";
 import Search from "./Search";
 import CurrencyAndAirport from "./CurrencyAndAirport";
+import axios from "axios";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
 export default function Wrapper({ country, setCountry }) {
   const { code3 } = useParams();
@@ -14,7 +14,9 @@ export default function Wrapper({ country, setCountry }) {
   const [airports, setAirports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [found, setFound] = useState(true);
-  const [value, setValue] = useState(0);
+  const location = useLocation();
+  const isAirportsRoute = location.pathname.endsWith("/airports");
+  const [value, setValue] = useState(isAirportsRoute ? 1 : 0);
   useEffect(() => {
     axios
       .get(
@@ -54,6 +56,7 @@ export default function Wrapper({ country, setCountry }) {
         console.error("Error:", error);
       });
   }, [code3]);
+
   useEffect(() => {
     if (countryData) {
       const AIRPORTS_URL = `https://api.api-ninjas.com/v1/airports?country=${countryData.code}`;
@@ -73,6 +76,7 @@ export default function Wrapper({ country, setCountry }) {
       fetchData();
     }
   }, [countryData, apiKey]);
+
   if (found) {
     return (
       <div
@@ -100,8 +104,12 @@ export default function Wrapper({ country, setCountry }) {
       <CountryInfo countryData={countryData} allCountry={allCountry} />
       <div>
         <ul>
-          <CurrencyAndAirport value={value} setValue={setValue} />
-          <Airports airports={airports} value={value} isLoading={isLoading} />
+          <CurrencyAndAirport value={value} setValue={setValue} airports={airports} isLoading={isLoading} />
+          {/* {isAirportsRoute ? (
+            <Airports airports={airports} isLoading={isLoading} />
+          ) : (
+            <div>hello worldddd</div>
+          )} */}
         </ul>
       </div>
     </Outer>
