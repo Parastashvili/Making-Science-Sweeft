@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 export default function UserDirect({ setCountry }) {
   const navigate = useNavigate();
   const [userCode, setUserCode] = useState("");
-  
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -40,6 +40,7 @@ export default function UserDirect({ setCountry }) {
         },
         (error) => {
           console.error("Geolocation error:", error);
+          navigate(`/GEO`);
         }
       );
     } else {
