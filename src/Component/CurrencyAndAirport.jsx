@@ -4,7 +4,7 @@ import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import AirplanemodeActiveIcon from "@mui/icons-material/AirplanemodeActive";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
-import Airports from "./Airports";
+import Airports from "./Airports/Airports";
 import CurrencyWrapper from "./Currency/CurrencyWrapper";
 
 export default function CurrencyAndAirport({
