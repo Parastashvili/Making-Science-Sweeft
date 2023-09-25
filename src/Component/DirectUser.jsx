@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
 import { useNavigate } from "react-router-dom";
+
 export default function UserDirect({ setCountry }) {
   const navigate = useNavigate();
   const [userCode, setUserCode] = useState("");
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -45,6 +47,7 @@ export default function UserDirect({ setCountry }) {
       console.error("Geolocation not available");
     }
   }, []);
+  
   useEffect(() => {
     if (userCode) {
       axios

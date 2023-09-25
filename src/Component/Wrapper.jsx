@@ -7,6 +7,7 @@ import CurrencyAndAirport from "./CurrencyAndAirport";
 import axios from "axios";
 import { useQuery } from "react-query";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
+
 export default function Wrapper({ country, setCountry }) {
   const { code3 } = useParams();
   const [countryData, setCountryData] = useState(null);
@@ -56,6 +57,7 @@ export default function Wrapper({ country, setCountry }) {
         console.error("Error:", error);
       });
   }, [code3]);
+  
   const airportsQueryKey = ["cachedAirport", countryData?.code];
   const { data: airports, isLoading: airportsLoading } = useQuery(
     airportsQueryKey,

@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+
 export default function Airports({ airports, isLoading }) {
   const [filter, setFilter] = useState("");
   const [filteredAirports, setFilteredAirports] = useState([]);
+
   useEffect(() => {
     if (!isLoading) {
       const filtered = airports.filter((airport) =>
@@ -13,6 +15,7 @@ export default function Airports({ airports, isLoading }) {
       setFilteredAirports(filtered);
     }
   }, [filter, airports, isLoading]);
+
   return (
     <div>
       <>
@@ -56,7 +59,7 @@ export default function Airports({ airports, isLoading }) {
                   </div>
                 ))
               ) : (
-                <p>There are no airports matching the filter</p>
+                <p>There are no airports is this country</p>
               )}
             </div>
           </>
