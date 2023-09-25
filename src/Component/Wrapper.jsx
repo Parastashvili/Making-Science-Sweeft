@@ -5,14 +5,12 @@ import CountryInfo from "./CountryInfo";
 import SelectCountry from "./SelectCountry";
 import CurrencyAndAirport from "./CurrencyAndAirport";
 import axios from "axios";
+import { useQuery } from "react-query";
 const apiKey = import.meta.env.VITE_AIRPORTS_API_KEY;
-
 export default function Wrapper({ country, setCountry }) {
   const { code3 } = useParams();
   const [countryData, setCountryData] = useState(null);
   const [allCountry, setAllCountry] = useState([]);
-  const [airports, setAirports] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [found, setFound] = useState(true);
   const location = useLocation();
   const isAirportsRoute = location.pathname.endsWith("/airports");
@@ -58,26 +56,24 @@ export default function Wrapper({ country, setCountry }) {
         console.error("Error:", error);
       });
   }, [code3]);
-
-  useEffect(() => {
-    if (countryData) {
-      const AIRPORTS_URL = `https://api.api-ninjas.com/v1/airports?country=${countryData.code}`;
-      const fetchData = async () => {
-        try {
-          const response = await axios.get(AIRPORTS_URL, {
-            headers: {
-              "X-Api-Key": apiKey,
-            },
-          });
-          setAirports(response.data.filter((entry) => entry.iata !== ""));
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-      fetchData();
+  const airportsQueryKey = ["cachedAirport", countryData?.code];
+  const { data: airports, isLoading: airportsLoading } = useQuery(
+    airportsQueryKey,
+    async () => {
+      if (countryData) {
+        const AIRPORTS_URL = `https://api.api-ninjas.com/v1/airports?country=${countryData.code}`;
+        const response = await axios.get(AIRPORTS_URL, {
+          headers: {
+            "X-Api-Key": apiKey,
+          },
+        });
+        return response.data.filter((entry) => entry.iata !== "");
+      }
+    },
+    {
+      enabled: !!countryData,
     }
-  }, [countryData, apiKey]);
+  );
 
   if (found) {
     return (
@@ -94,13 +90,11 @@ export default function Wrapper({ country, setCountry }) {
       </div>
     );
   }
-
   return (
     <Outer>
       <SelectCountry
         allCountry={allCountry}
         country={country}
-        setIsLoading={setIsLoading}
         setCountry={setCountry}
         setValue={setValue}
       />
@@ -111,7 +105,7 @@ export default function Wrapper({ country, setCountry }) {
             value={value}
             setValue={setValue}
             airports={airports}
-            isLoading={isLoading}
+            isLoading={airportsLoading}
             allCountry={allCountry}
             countryData={countryData}
           />
@@ -120,7 +114,6 @@ export default function Wrapper({ country, setCountry }) {
     </Outer>
   );
 }
-
 const Outer = styled.div`
   max-width: 1200px;
   margin: auto;
@@ -145,7 +138,7 @@ const Outer = styled.div`
     font-family: "Roboto", sans-serif;
     font-size: 34px;
     font-weight: 500;
-    margin-top: 20px;
+    margin: 20px 0 10px 0;
   }
   ul {
     padding: 20px;

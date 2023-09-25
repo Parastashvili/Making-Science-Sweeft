@@ -2,39 +2,28 @@ import React, { useEffect, useState } from "react";
 import Skeleton from "@mui/material/Skeleton";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-
 export default function Airports({ airports, isLoading }) {
   const [filter, setFilter] = useState("");
-  const [filteredAirports, setFilteredAirports] = useState(airports);
-
+  const [filteredAirports, setFilteredAirports] = useState([]);
   useEffect(() => {
-    const debounce = setTimeout(() => {
+    if (!isLoading) {
       const filtered = airports.filter((airport) =>
         airport.name.toLowerCase().includes(filter.toLowerCase())
       );
       setFilteredAirports(filtered);
-    }, 500);
-    return () => clearTimeout(debounce);
-  }, [filter, airports]);
-  
+    }
+  }, [filter, airports, isLoading]);
   return (
     <div>
       <>
         <h2 className="sectionHeader">Airports</h2>
         {isLoading ? (
           <div className="grid">
-            <Box sx={{ width: 340 }}>
-              <Skeleton height={30} animation="wave" />
-            </Box>
-            <Box sx={{ width: 340 }}>
-              <Skeleton height={30} animation="wave" />
-            </Box>
-            <Box sx={{ width: 340 }}>
-              <Skeleton height={30} animation="wave" />
-            </Box>
-            <Box sx={{ width: 340 }}>
-              <Skeleton height={30} animation="wave" />
-            </Box>
+            {Array.from({ length: 4 }, (_, index) => (
+              <Box key={index} sx={{ width: 340 }}>
+                <Skeleton height={30} animation="wave" />
+              </Box>
+            ))}
           </div>
         ) : (
           <>

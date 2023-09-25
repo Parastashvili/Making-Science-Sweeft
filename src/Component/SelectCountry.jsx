@@ -8,7 +8,6 @@ import Box from "@mui/material/Box";
 export default function SelectCountry({
   allCountry,
   country,
-  setIsLoading,
   setCountry,
   setValue,
 }) {
@@ -22,7 +21,6 @@ export default function SelectCountry({
     if (selectedCountryData) {
       setCountry(selectedCountryData.name);
       navigate(`/${selectedCountryData.code3}`);
-      setIsLoading(true);
       setValue(0);
     } else {
       console.log("Country not found");

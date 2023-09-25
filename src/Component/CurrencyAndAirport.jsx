@@ -26,7 +26,7 @@ export default function CurrencyAndAirport({
     }
     setValue(newValue);
   };
-  
+
   return (
     <div>
       {" "}
